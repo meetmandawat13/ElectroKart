@@ -8,6 +8,7 @@ import CheckoutSteps from '../components/CheckoutSteps';
 import Loader from '../components/Loader';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice';
 import { clearCartItems } from '../slices/cartSlice';
+import formatINR from '../utils/formatINR';
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
@@ -88,9 +89,9 @@ const PlaceOrderScreen = () => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} = $
-                          {(item.qty * (item.price * 100)) / 100}
+                          {item.qty} x {formatINR(item.price)} = {formatINR(item.qty * item.price)}
                         </Col>
+
                       </Row>
                     </ListGroup.Item>
                   ))}
@@ -106,29 +107,30 @@ const PlaceOrderScreen = () => {
                 <h2>Order Summary</h2>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Row>
-                  <Col>Items</Col>
-                  <Col>${cart.itemsPrice}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Shipping</Col>
-                  <Col>${cart.shippingPrice}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Tax</Col>
-                  <Col>${cart.taxPrice}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Total</Col>
-                  <Col>${cart.totalPrice}</Col>
-                </Row>
-              </ListGroup.Item>
+  <Row>
+    <Col>Items</Col>
+    <Col>{formatINR(cart.itemsPrice)}</Col>
+  </Row>
+</ListGroup.Item>
+<ListGroup.Item>
+  <Row>
+    <Col>Shipping</Col>
+    <Col>{formatINR(cart.shippingPrice)}</Col>
+  </Row>
+</ListGroup.Item>
+<ListGroup.Item>
+  <Row>
+    <Col>Tax</Col>
+    <Col>{formatINR(cart.taxPrice)}</Col>
+  </Row>
+</ListGroup.Item>
+<ListGroup.Item>
+  <Row>
+    <Col>Total</Col>
+    <Col>{formatINR(cart.totalPrice)}</Col>
+  </Row>
+</ListGroup.Item>
+
               <ListGroup.Item>
                 {error && (
                   <Message variant='danger'>{error.data.message}</Message>

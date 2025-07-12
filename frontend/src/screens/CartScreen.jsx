@@ -12,6 +12,7 @@ import {
 import { FaTrash } from 'react-icons/fa';
 import Message from '../components/Message';
 import { addToCart, removeFromCart } from '../slices/cartSlice';
+import formatINR from '../utils/formatINR'; // 💰 Import INR formatter
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -20,8 +21,6 @@ const CartScreen = () => {
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
 
-  // NOTE: no need for an async function here as we are not awaiting the
-  // resolution of a Promise
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
   };
@@ -53,7 +52,7 @@ const CartScreen = () => {
                   <Col md={3}>
                     <Link to={`/product/${item._id}`}>{item.name}</Link>
                   </Col>
-                  <Col md={2}>${item.price}</Col>
+                  <Col md={2}>{formatINR(item.price)}</Col>
                   <Col md={2}>
                     <Form.Control
                       as='select'
@@ -92,10 +91,9 @@ const CartScreen = () => {
                 Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                 items
               </h2>
-              $
-              {cartItems
-                .reduce((acc, item) => acc + item.qty * item.price, 0)
-                .toFixed(2)}
+              {formatINR(
+                cartItems.reduce((acc, item) => acc + item.qty * item.price, 0)
+              )}
             </ListGroup.Item>
             <ListGroup.Item>
               <Button

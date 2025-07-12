@@ -1,16 +1,23 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import colors from 'colors';
-import users from './data/users.js';
-import products from './data/products.js';
-import User from './models/userModel.js';
-import Product from './models/productModel.js';
-import Order from './models/orderModel.js';
-import connectDB from './config/db.js';
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+import colors from 'colors'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-connectDB();
+dotenv.config({ path: path.resolve(__dirname, '.env') })
+
+import users from './data/users.js'
+import products from './data/products.js'
+import User from './models/userModel.js'
+import Product from './models/productModel.js'
+import Order from './models/orderModel.js'
+import connectDB from './config/db.js'
+
+connectDB()
+
 
 const importData = async () => {
   try {

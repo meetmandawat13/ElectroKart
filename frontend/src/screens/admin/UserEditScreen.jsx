@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import FormContainer from '../../components/FormContainer';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
 import {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
@@ -13,6 +12,8 @@ import {
 
 const UserEditScreen = () => {
   const { id: userId } = useParams();
+  const navigate = useNavigate();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
@@ -26,20 +27,6 @@ const UserEditScreen = () => {
 
   const [updateUser, { isLoading: loadingUpdate }] = useUpdateUserMutation();
 
-  const navigate = useNavigate();
-
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    try {
-      await updateUser({ userId, name, email, isAdmin });
-      toast.success('user updated successfully');
-      refetch();
-      navigate('/admin/userlist');
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
-    }
-  };
-
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -47,6 +34,18 @@ const UserEditScreen = () => {
       setIsAdmin(user.isAdmin);
     }
   }, [user]);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      await updateUser({ userId, name, email, isAdmin }).unwrap();
+      toast.success('User updated successfully');
+      refetch();
+      navigate('/admin/userlist');
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   return (
     <>
@@ -67,11 +66,11 @@ const UserEditScreen = () => {
             <Form.Group className='my-2' controlId='name'>
               <Form.Label>Name</Form.Label>
               <Form.Control
-                type='name'
+                type='text'
                 placeholder='Enter name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
+              />
             </Form.Group>
 
             <Form.Group className='my-2' controlId='email'>
@@ -81,16 +80,16 @@ const UserEditScreen = () => {
                 placeholder='Enter email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-              ></Form.Control>
+              />
             </Form.Group>
 
-            <Form.Group className='my-2' controlId='isadmin'>
+            <Form.Group className='my-3' controlId='isadmin'>
               <Form.Check
                 type='checkbox'
                 label='Is Admin'
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
-              ></Form.Check>
+              />
             </Form.Group>
 
             <Button type='submit' variant='primary'>

@@ -12,13 +12,13 @@ import { Link } from 'react-router-dom';
 
 const UserListScreen = () => {
   const { data: users, refetch, isLoading, error } = useGetUsersQuery();
-
   const [deleteUser] = useDeleteUserMutation();
 
   const deleteHandler = async (id) => {
-    if (window.confirm('Are you sure')) {
+    if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await deleteUser(id);
+        await deleteUser(id).unwrap();
+        toast.success('User deleted');
         refetch();
       } catch (err) {
         toast.error(err?.data?.message || err.error);
@@ -43,7 +43,7 @@ const UserListScreen = () => {
               <th>NAME</th>
               <th>EMAIL</th>
               <th>ADMIN</th>
-              <th></th>
+              <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
@@ -67,9 +67,8 @@ const UserListScreen = () => {
                       <Button
                         as={Link}
                         to={`/admin/user/${user._id}/edit`}
-                        style={{ marginRight: '10px' }}
                         variant='light'
-                        className='btn-sm'
+                        className='btn-sm me-2'
                       >
                         <FaEdit />
                       </Button>
